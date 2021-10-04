@@ -5,8 +5,17 @@ using System.Linq;
 
 namespace TicTacToe
 {
+    public enum GameState
+    {
+        Ready,
+        Playing,
+        End
+    }
+
     class Program
     {
+        static GameState CurrentGameState = GameState.Ready;
+
         static List<FieldEntity> playboardEntities = new List<FieldEntity>();
 
         static bool IsPlayerOne = true;
@@ -18,17 +27,17 @@ namespace TicTacToe
             playboardEntities.Clear();
             playboardEntities = new List<FieldEntity>();
 
-            playboardEntities.Add(new FieldEntity(0, 0, 75, 75,0,0));
-            playboardEntities.Add(new FieldEntity(100, 0, 75, 75,1,0));
-            playboardEntities.Add(new FieldEntity(200, 0, 75, 75,2,0));
+            playboardEntities.Add(new FieldEntity(0, 0, 100, 100, 0,0));
+            playboardEntities.Add(new FieldEntity(100, 0, 100, 100, 1,0));
+            playboardEntities.Add(new FieldEntity(200, 0, 100, 100, 2,0));
 
-            playboardEntities.Add(new FieldEntity(0, 100, 75, 75, 0,1));
-            playboardEntities.Add(new FieldEntity(100, 100, 75, 75, 1,1));
-            playboardEntities.Add(new FieldEntity(200, 100, 75, 75, 2,1));
+            playboardEntities.Add(new FieldEntity(0, 100, 100, 100, 0,1));
+            playboardEntities.Add(new FieldEntity(100, 100, 100, 100, 1,1));
+            playboardEntities.Add(new FieldEntity(200, 100, 100, 100, 2,1));
 
-            playboardEntities.Add(new FieldEntity(0, 200, 75, 75, 0,2));
-            playboardEntities.Add(new FieldEntity(100, 200, 75, 75, 1,2));
-            playboardEntities.Add(new FieldEntity(200, 200, 75, 75, 2,2));
+            playboardEntities.Add(new FieldEntity(0, 200, 100, 100, 0,2));
+            playboardEntities.Add(new FieldEntity(100, 200, 100, 100, 1,2));
+            playboardEntities.Add(new FieldEntity(200, 200, 100, 100, 2,2));
 
 
         }
@@ -61,39 +70,24 @@ namespace TicTacToe
 
             while (!Raylib.WindowShouldClose())
             {
+
                 Raylib.BeginDrawing();
                 Raylib.ClearBackground(Color.WHITE);
 
-                FieldInput fiReady = FieldInput.Empty;
-
-                if (IsPlayerOne == true)
-                    fiReady = FieldInput.PlayerOne;
-                else
-                    fiReady = FieldInput.PlayerTwo;
-
-                //DebugShowMousePosition();
-                DrawPlayboard();
-                CheckMouseOverField();
-
-                if(Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
+                switch(CurrentGameState)
                 {
-                    var clickedField = playboardEntities.Where(item => item.ISSELECTED == true).FirstOrDefault();
-                    if(clickedField != null)
-                    {
-                        if(clickedField.ISCLICKED == false)
-                        {
-                            clickedField.CLICK(fiReady);
-                            IsPlayerOne = !IsPlayerOne;
-                            Click_Counter++;
-                            if(Click_Counter >= 9)
-                            {
-                                Reset();
-                            }
-                            CheckForWin();
-                        }
-                        
-                    }
+                    case GameState.Ready:
+                        GameReady();
+                        break;
+                    case GameState.Playing:
+                        GamePlaying();
+                        break;
+                    case GameState.End:
+                        GameEnd();
+                        break;
                 }
+
+                
                 
                 Raylib.EndDrawing();
             }
@@ -106,6 +100,67 @@ namespace TicTacToe
             InitPlayboard();
             IsPlayerOne = true;
             Click_Counter = 0;
+            CurrentGameState = GameState.Playing;
+        }
+
+        public static void GameReady()
+        {
+            Raylib.DrawText("Tic-TacToe", 0, 0, 16, Color.BLACK);
+            Raylib.DrawText("Press anywhere to play!", 0, 65, 16, Color.BLACK);
+
+            if(Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
+            {
+                CurrentGameState = GameState.Playing;
+            }
+
+        }
+
+        public static void GameEnd()
+        {
+            DrawPlayboard();
+
+            Raylib.DrawRectangle(0, 0, 200, 50, Color.WHITE);
+
+            Raylib.DrawText("GameEnd!", 0, 0, 16, Color.BLACK);
+            Raylib.DrawText("Press anywhere to play!", 0, 20, 16, Color.BLACK);
+
+            if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
+            {
+                Reset();
+            }
+        }
+
+        public static void GamePlaying()
+        {
+            FieldInput fiReady = FieldInput.Empty;
+
+            if (IsPlayerOne == true)
+                fiReady = FieldInput.PlayerOne;
+            else
+                fiReady = FieldInput.PlayerTwo;
+
+            //DebugShowMousePosition();
+            DrawPlayboard();
+            CheckMouseOverField();
+
+            if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
+            {
+                var clickedField = playboardEntities.Where(item => item.ISSELECTED == true).FirstOrDefault();
+                if (clickedField != null)
+                {
+                    if (clickedField.ISCLICKED == false)
+                    {
+                        clickedField.CLICK(fiReady);
+                        IsPlayerOne = !IsPlayerOne;
+                        Click_Counter++;
+                        if (Click_Counter >= 9)
+                        {
+                            CurrentGameState = GameState.End;
+                        }
+                        CheckForWin();
+                    }
+                }
+            }
         }
 
         private static void CheckForWin()

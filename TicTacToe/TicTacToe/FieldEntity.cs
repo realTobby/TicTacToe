@@ -35,19 +35,19 @@ namespace TicTacToe
             HEIGHT = h;
             COL_INDEX = col;
             ROW_INDEX = row;
-            COLOR = Color.BLACK;
+            COLOR = Color.WHITE;
         }
 
         public void Select()
         {
             ISSELECTED = true;
-            COLOR = Color.YELLOW;
+            COLOR = Color.LIGHTGRAY;
         }
 
         public void Unselect()
         {
             ISSELECTED = false;
-            COLOR = Color.BLACK;
+            COLOR = Color.WHITE;
         }
 
         public void CLICK(FieldInput fi)
@@ -55,6 +55,8 @@ namespace TicTacToe
             ISCLICKED = true;
             ISSELECTED = false;
             OCCUPATION = fi;
+
+            // ==> ADD CLICK SOUND ====> Pseudo: Raylib.PlaySound("CLICK_SOUND.wav");
 
             if(OCCUPATION == FieldInput.PlayerOne)
             {
@@ -83,17 +85,18 @@ namespace TicTacToe
 
         public void Draw()
         {
-            Raylib.DrawRectangle(POSX, POSY, WIDTH, HEIGHT, COLOR);
+            Raylib.DrawRectangleLines(POSX, POSY, WIDTH, HEIGHT, COLOR);
+            Raylib.DrawRectangleLines(POSX+1, POSY+1, WIDTH-2, HEIGHT-2, COLOR);
 
-            if(ISCLICKED == true)
+            if (ISCLICKED == true)
             {
                 if (OCCUPATION == FieldInput.PlayerOne)
                 {
-                    Raylib.DrawText("X", POSX+10, POSY+2, 50, Color.BLACK);
+                    Raylib.DrawText("X", POSX+20, POSY+4, 100, Color.BLACK);
                 }
                 if (OCCUPATION == FieldInput.PlayerTwo)
                 {
-                    Raylib.DrawText("O", POSX+10, POSY+2, 50, Color.BLACK);
+                    Raylib.DrawText("O", POSX+20, POSY+4, 100, Color.BLACK);
                 }
             }
         }
