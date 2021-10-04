@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace TicTacToe
 {
@@ -22,8 +23,14 @@ namespace TicTacToe
 
         static int Click_Counter = 0;
 
+        static Random rnd;
+        static List<StarPixel> starsfield = new List<StarPixel>();
+        static List<StarPixel> starsfield_Front = new List<StarPixel>();
+
         static void InitPlayboard()
         {
+            rnd = new Random();
+
             playboardEntities.Clear();
             playboardEntities = new List<FieldEntity>();
 
@@ -38,6 +45,20 @@ namespace TicTacToe
             playboardEntities.Add(new FieldEntity(0, 200, 100, 100, 0,2));
             playboardEntities.Add(new FieldEntity(100, 200, 100, 100, 1,2));
             playboardEntities.Add(new FieldEntity(200, 200, 100, 100, 2,2));
+
+
+            int starCount = rnd.Next(500, 1000);
+            for (int s = 0; s < starCount; s++)
+            {
+                StarPixel newStar = new StarPixel(rnd.Next(0, 300), rnd.Next(0, 300));
+                starsfield.Add(newStar);
+            }
+
+            for (int s = 0; s < starCount; s++)
+            {
+                StarPixel newStar = new StarPixel(rnd.Next(0, 300), rnd.Next(0, 300));
+                starsfield_Front.Add(newStar);
+            }
 
 
         }
@@ -100,11 +121,35 @@ namespace TicTacToe
             InitPlayboard();
             IsPlayerOne = true;
             Click_Counter = 0;
-            CurrentGameState = GameState.Playing;
+            CurrentGameState = GameState.Ready;
         }
+
+       
 
         public static void GameReady()
         {
+            int indx = 0;
+            foreach (var star in starsfield.ToList())
+            {
+                star.Draw(Color.BLACK);
+                star.POSITIONX += 0.05f;
+                if (star.POSITIONX >= 301)
+                {
+                    star.POSITIONX = -5;
+                }
+            }
+
+            foreach (var star in starsfield_Front.ToList())
+            {
+                star.Draw(Color.LIGHTGRAY);
+                star.POSITIONX += 0.02f;
+                if (star.POSITIONX >= 301)
+                {
+                    star.POSITIONX = -5;
+                }
+            }
+
+
             Raylib.DrawText("Tic-TacToe", 0, 0, 16, Color.BLACK);
             Raylib.DrawText("Press anywhere to play!", 0, 65, 16, Color.BLACK);
 
