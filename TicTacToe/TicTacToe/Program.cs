@@ -119,10 +119,10 @@ namespace TicTacToe
         {
             DrawPlayboard();
 
-            Raylib.DrawRectangle(0, 0, 200, 50, Color.WHITE);
+            Raylib.DrawRectangle(0, 0, 230, 50, Color.WHITE);
 
             Raylib.DrawText("GameEnd!", 0, 0, 16, Color.BLACK);
-            Raylib.DrawText("Press anywhere to play!", 0, 20, 16, Color.BLACK);
+            Raylib.DrawText("Press anywhere to play again!", 0, 20, 16, Color.BLACK);
 
             if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
             {
@@ -151,13 +151,13 @@ namespace TicTacToe
                     if (clickedField.ISCLICKED == false)
                     {
                         clickedField.CLICK(fiReady);
+                        CheckForWin();
                         IsPlayerOne = !IsPlayerOne;
                         Click_Counter++;
                         if (Click_Counter >= 9)
                         {
                             CurrentGameState = GameState.End;
                         }
-                        CheckForWin();
                     }
                 }
             }
@@ -166,10 +166,16 @@ namespace TicTacToe
         private static void CheckForWin()
         {
             // check if any line on the board is occupied by one player only
+            if(IsPlayerOne == true)
+            {
+                // check for occupation == FieldInput.PlayerOne
 
-
-
-
+                
+            }
+            else
+            {
+                // check for occupation == FieldInput.PlayerTwo
+            }
 
         }
 

@@ -26,7 +26,6 @@ namespace TicTacToe
         public bool ISCLICKED { get; set; } = false;
         public FieldInput OCCUPATION = FieldInput.Empty;
 
-
         public FieldEntity(int x, int y, int w, int h, int col, int row)
         {
             POSX = x;
@@ -85,8 +84,10 @@ namespace TicTacToe
 
         public void Draw()
         {
-            Raylib.DrawRectangleLines(POSX, POSY, WIDTH, HEIGHT, COLOR);
-            Raylib.DrawRectangleLines(POSX+1, POSY+1, WIDTH-2, HEIGHT-2, COLOR);
+            //Raylib.DrawRectangleLines(POSX, POSY, WIDTH, HEIGHT, COLOR);
+            //Raylib.DrawRectangleLines(POSX+1, POSY+1, WIDTH-2, HEIGHT-2, COLOR);
+
+            Raylib.DrawRectangle(POSX, POSY, WIDTH, HEIGHT, COLOR);
 
             if (ISCLICKED == true)
             {
