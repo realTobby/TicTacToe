@@ -9,19 +9,26 @@ namespace TicTacToe
     {
         static List<FieldEntity> playboardEntities = new List<FieldEntity>();
 
+        static bool IsPlayerOne = true;
+
+        static int Click_Counter = 0;
+
         static void InitPlayboard()
         {
-            playboardEntities.Add(new FieldEntity(0, 0, 50, 50));
-            playboardEntities.Add(new FieldEntity(100, 0, 50, 50));
-            playboardEntities.Add(new FieldEntity(200, 0, 50, 50));
+            playboardEntities.Clear();
+            playboardEntities = new List<FieldEntity>();
 
-            playboardEntities.Add(new FieldEntity(0, 100, 50, 50));
-            playboardEntities.Add(new FieldEntity(100, 100, 50, 50));
-            playboardEntities.Add(new FieldEntity(200, 100, 50, 50));
+            playboardEntities.Add(new FieldEntity(0, 0, 75, 75,0,0));
+            playboardEntities.Add(new FieldEntity(100, 0, 75, 75,1,0));
+            playboardEntities.Add(new FieldEntity(200, 0, 75, 75,2,0));
 
-            playboardEntities.Add(new FieldEntity(0, 200, 50, 50));
-            playboardEntities.Add(new FieldEntity(100, 200, 50, 50));
-            playboardEntities.Add(new FieldEntity(200, 200, 50, 50));
+            playboardEntities.Add(new FieldEntity(0, 100, 75, 75, 0,1));
+            playboardEntities.Add(new FieldEntity(100, 100, 75, 75, 1,1));
+            playboardEntities.Add(new FieldEntity(200, 100, 75, 75, 2,1));
+
+            playboardEntities.Add(new FieldEntity(0, 200, 75, 75, 0,2));
+            playboardEntities.Add(new FieldEntity(100, 200, 75, 75, 1,2));
+            playboardEntities.Add(new FieldEntity(200, 200, 75, 75, 2,2));
 
 
         }
@@ -57,7 +64,14 @@ namespace TicTacToe
                 Raylib.BeginDrawing();
                 Raylib.ClearBackground(Color.WHITE);
 
-                DebugShowMousePosition();
+                FieldInput fiReady = FieldInput.Empty;
+
+                if (IsPlayerOne == true)
+                    fiReady = FieldInput.PlayerOne;
+                else
+                    fiReady = FieldInput.PlayerTwo;
+
+                //DebugShowMousePosition();
                 DrawPlayboard();
                 CheckMouseOverField();
 
@@ -66,7 +80,18 @@ namespace TicTacToe
                     var clickedField = playboardEntities.Where(item => item.ISSELECTED == true).FirstOrDefault();
                     if(clickedField != null)
                     {
-                        clickedField.CLICK();
+                        if(clickedField.ISCLICKED == false)
+                        {
+                            clickedField.CLICK(fiReady);
+                            IsPlayerOne = !IsPlayerOne;
+                            Click_Counter++;
+                            if(Click_Counter >= 9)
+                            {
+                                Reset();
+                            }
+                            CheckForWin();
+                        }
+                        
                     }
                 }
                 
@@ -74,6 +99,23 @@ namespace TicTacToe
             }
 
             Raylib.CloseWindow();
+        }
+
+        public static void Reset()
+        {
+            InitPlayboard();
+            IsPlayerOne = true;
+            Click_Counter = 0;
+        }
+
+        private static void CheckForWin()
+        {
+            // check if any line on the board is occupied by one player only
+
+
+
+
+
         }
 
         private static void DebugShowMousePosition()

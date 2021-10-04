@@ -5,56 +5,67 @@ using System.Text;
 
 namespace TicTacToe
 {
+    public enum FieldInput
+    {
+        Empty,
+        PlayerOne,
+        PlayerTwo
+    }
+
     public class FieldEntity
     {
+        public int COL_INDEX { get; set; } = 0;
+        public int ROW_INDEX { get; set; } = 0;
+
         public int POSX { get; set; }
         public int POSY { get; set; }
-
         public int WIDTH { get; set; }
         public int HEIGHT { get; set; }
         public Color COLOR { get; set; }
         public bool ISSELECTED { get; set; } = false;
         public bool ISCLICKED { get; set; } = false;
-        public Color SELECTED_COLOR = Color.YELLOW;
-        public Color CLICKED_COLOR = Color.RED;
-        public Color NORMAL_COLOR = Color.BLACK;
+        public FieldInput OCCUPATION = FieldInput.Empty;
 
-        public FieldEntity(int x, int y, int w, int h)
+
+        public FieldEntity(int x, int y, int w, int h, int col, int row)
         {
             POSX = x;
             POSY = y;
             WIDTH = w;
             HEIGHT = h;
+            COL_INDEX = col;
+            ROW_INDEX = row;
             COLOR = Color.BLACK;
         }
 
         public void Select()
         {
             ISSELECTED = true;
-            COLOR = SELECTED_COLOR;
+            COLOR = Color.YELLOW;
         }
 
         public void Unselect()
         {
             ISSELECTED = false;
-            COLOR = NORMAL_COLOR;
+            COLOR = Color.BLACK;
         }
 
-        public void CLICK()
+        public void CLICK(FieldInput fi)
         {
-            ISCLICKED = !ISCLICKED;
-            if(ISCLICKED == true)
+            ISCLICKED = true;
+            ISSELECTED = false;
+            OCCUPATION = fi;
+
+            if(OCCUPATION == FieldInput.PlayerOne)
             {
-                COLOR = CLICKED_COLOR;
-                ISSELECTED = false;
+                COLOR = Color.RED;
             }
 
-            if(ISCLICKED == false)
+            if(OCCUPATION == FieldInput.PlayerTwo)
             {
-                COLOR = NORMAL_COLOR;
-                ISCLICKED = false;
-                ISSELECTED = false;
+                COLOR = Color.BLUE;
             }
+
         }
 
 
@@ -73,7 +84,18 @@ namespace TicTacToe
         public void Draw()
         {
             Raylib.DrawRectangle(POSX, POSY, WIDTH, HEIGHT, COLOR);
-        }
 
+            if(ISCLICKED == true)
+            {
+                if (OCCUPATION == FieldInput.PlayerOne)
+                {
+                    Raylib.DrawText("X", POSX+10, POSY+2, 50, Color.BLACK);
+                }
+                if (OCCUPATION == FieldInput.PlayerTwo)
+                {
+                    Raylib.DrawText("O", POSX+10, POSY+2, 50, Color.BLACK);
+                }
+            }
+        }
     }
 }
