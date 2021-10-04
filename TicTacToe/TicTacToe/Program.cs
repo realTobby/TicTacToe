@@ -165,16 +165,61 @@ namespace TicTacToe
 
         private static void CheckForWin()
         {
+            bool playerOneWon = false;
+            bool playerTwoWon = false;
+            bool isDraw = false;
             // check if any line on the board is occupied by one player only
             if(IsPlayerOne == true)
             {
                 // check for occupation == FieldInput.PlayerOne
+
+                // check all columns
+                bool isColumnWinner = true;
+                for(int x = 0; x < 3; x++)
+                {
+                    for(int y = 0; y < 3; y++)
+                    {
+                        if (playboardEntities.Where(item => item.COL_INDEX == x && item.ROW_INDEX == y).FirstOrDefault().OCCUPATION != FieldInput.PlayerOne)
+                        {
+                            isColumnWinner = false;
+                            x = 3;
+                            break;
+                        }
+                            
+                    }
+                }
+
+                // check all rows
+                bool isRowWinner = true;
+                for(int y = 0; y < 3; y++)
+                {
+                    for(int x = 0; x < 3; x++)
+                    {
+                        if (playboardEntities.Where(item => item.COL_INDEX == x && item.ROW_INDEX == y).FirstOrDefault().OCCUPATION != FieldInput.PlayerOne)
+                        {
+                            isRowWinner = false;
+                            y = 3;
+                            break;
+                        }
+                    }
+                }
+
+                // check both diagonal
+                bool isDiagonalWinner = true;
+
+
 
                 
             }
             else
             {
                 // check for occupation == FieldInput.PlayerTwo
+            }
+
+            if(playboardEntities.Where(item => item.OCCUPATION == FieldInput.Empty).Count() <= 0)
+            {
+                // is draw
+                isDraw = true;
             }
 
         }
